@@ -122,7 +122,7 @@
     if (!note){
       note = document.createElement('sticky-note');
       note.id = key;
-      this.notesContainer.insertBefore(note, notesSectionTitle.nextSibling);
+      this.notesContainer.insertBefore(note, this.notesSectionTitle.nextSibling);
     }
 
     if (!message){
@@ -169,7 +169,7 @@
     };
 
     StickyNote.attributeChangedCallback = function(attributeName){
-      if(attribute == 'id'){
+      if(attributeName == 'id'){
         var date = new Date();
         if(this.id){
           date = new Date(parseInt(this.id));
@@ -184,10 +184,10 @@
       this.messageElement.innerHTML = this.messageElement.innerHTML.replace(/\n/g, '<br>');
     };
 
-    StickyNote.deleteNote(function(){
+    StickyNote.deleteNote = function(){
       localStorage.removeItem(this.id);
       this.parentNode.removeChild(this);
-    });
+    };
 
     document.registerElement('sticky-note', {
       prototype: StickyNote
