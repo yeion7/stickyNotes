@@ -81,27 +81,27 @@
 
   // Your custom JavaScript goes here
 
-  function StickyNotesApp () {
-     this.notesContainer = document.getElementById('notes-container');
-     this.noteMessageInput = document.getElementById('message');
-     this.addNoteButton = document.getElementById('save');
-     this.notesSectionTitle = document.getElementById('notes-section-title');
+  function StickyNotesApp() {
+    this.notesContainer = document.getElementById('notes-container');
+    this.noteMessageInput = document.getElementById('message');
+    this.addNoteButton = document.getElementById('save');
+    this.notesSectionTitle = document.getElementById('notes-section-title');
 
-     this.addNoteButton.addEventListener('click', this.saveNote.bind(this));
+    this.addNoteButton.addEventListener('click', this.saveNote.bind(this));
 
-     this.noteMessageInput.addEventListener('keyup', this.toggleButton.bind(this));
+    this.noteMessageInput.addEventListener('keyup', this.toggleButton.bind(this));
 
-     for (var key in localStorage){
+    for (var key in localStorage) {
       this.displayNote(key, localStorage[key]);
-     }
+    }
 
-     window.addEventListener('storage', function(e){
+    window.addEventListener('storage', function(e) {
       this.displayNote(e.key, e.newValue);
-     }.bind(this));
+    }.bind(this));
   }
 
-  StickyNotesApp.prototype.saveNote = function(){
-    if(this.noteMessageInput.value); {
+  StickyNotesApp.prototype.saveNote = function() {
+    if (this.noteMessageInput.value) {
       var key = Date.now().toString();
       localStorage.setItem(key, this.noteMessageInput.value);
       this.displayNote(key, this.noteMessageInput.value);
@@ -110,87 +110,86 @@
     }
   };
 
-  StickyNotesApp.resetMaterialTextField = function(element){
+  StickyNotesApp.resetMaterialTextField = function(element) {
     element.value = '';
     element.parentNode.MaterialTextField.boundUpdateClassesHandler();
     element.blur();
   };
 
-  StickyNotesApp.prototype.displayNote = function(key, message){
+  StickyNotesApp.prototype.displayNote = function(key, message) {
     var note = document.getElementById(key);
 
-    if (!note){
+    if (!note) {
       note = document.createElement('sticky-note');
       note.id = key;
       this.notesContainer.insertBefore(note, this.notesSectionTitle.nextSibling);
     }
 
-    if (!message){
+    if (!message) {
       return note.deleteNote();
     }
     note.setMessage(message);
   };
 
   StickyNotesApp.prototype.toggleButton = function() {
-    if(this.noteMessageInput.value){
+    if (this.noteMessageInput.value) {
       this.addNoteButton.removeAttribute('disabled');
-    }else {
+    } else {
       this.addNoteButton.setAttribute('disabled', 'true');
     }
   };
 
-  window.addEventListener('load', function(){
+  window.addEventListener('load', function() {
     new StickyNotesApp();
   });
 
   var StickyNote = Object.create(HTMLElement.prototype);
 
-  StickyNote.TEMPLATE = 
-    '<div class="message"></div>' + 
+  StickyNote.TEMPLATE =
+    '<div class="message"></div>'+
     '<div class="date"></div>'+
     '<button class="delete mdl-button mdl-js-button mdl-js-ripple-effect">'+
     ' Delete'+
     '</button>';
 
-    StickyNote.CLASSES = ['mdl-cell--4-col-desktop', 'mdl-card__supporting-text', 'mdl-cell--12-col',
+  StickyNote.CLASSES = ['mdl-cell--4-col-desktop', 'mdl-card__supporting-text', 'mdl-cell--12-col',
                           'mdl-shadow--2dp', 'mdl-cell--4-col-tablet', 'mdl-card', 'mdl-cell', 'sticky-note'];
 
-    StickyNote.MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+  StickyNote.MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
-    StickyNote.createdCallback = function(){
-      StickyNote.CLASSES.forEach(function(klass){
-        this.classList.add(klass);
-      }.bind(this));
-      this.innerHTML = StickyNote.TEMPLATE;
-      this.messageElement = this.querySelector('.message');
-      this.dateElement = this.querySelector('.date');
-      this.deleteButton = this.querySelector('.delete');
-      this.deleteButton.addEventListener('click', this.deleteNote.bind(this));
-    };
+  StickyNote.createdCallback = function() {
+    StickyNote.CLASSES.forEach(function(klass) {
+      this.classList.add(klass);
+    }.bind(this));
+    this.innerHTML = StickyNote.TEMPLATE;
+    this.messageElement = this.querySelector('.message');
+    this.dateElement = this.querySelector('.date');
+    this.deleteButton = this.querySelector('.delete');
+    this.deleteButton.addEventListener('click', this.deleteNote.bind(this));
+  };
 
-    StickyNote.attributeChangedCallback = function(attributeName){
-      if(attributeName == 'id'){
-        var date = new Date();
-        if(this.id){
-          date = new Date(parseInt(this.id));
-        }
-        var month = StickyNote.MONTHS[date.getMonth()];
-        this.dateElement.textContent = 'Created on' + month + ' ' + date.getDate();
-        }
-    };
+  StickyNote.attributeChangedCallback = function(attributeName) {
+    if(attributeName == 'id') {
+      var date = new Date();
+      if(this.id) {
+        date = new Date(parseInt(this.id));
+      }
+      var month = StickyNote.MONTHS[date.getMonth()];
+      this.dateElement.textContent = 'Created on' + month + ' ' + date.getDate();
+    }
+  };
 
-    StickyNote.setMessage = function(message){
-      this.messageElement.textContent = message;
-      this.messageElement.innerHTML = this.messageElement.innerHTML.replace(/\n/g, '<br>');
-    };
+  StickyNote.setMessage = function(message) {
+    this.messageElement.textContent = message;
+    this.messageElement.innerHTML = this.messageElement.innerHTML.replace(/\n/g, '<br>');
+  };
 
-    StickyNote.deleteNote = function(){
-      localStorage.removeItem(this.id);
-      this.parentNode.removeChild(this);
-    };
+  StickyNote.deleteNote = function() {
+    localStorage.removeItem(this.id);
+    this.parentNode.removeChild(this);
+  };
 
-    document.registerElement('sticky-note', {
-      prototype: StickyNote
-    });
-
+  document.registerElement('sticky-note', {
+    prototype: StickyNote
+  });
 })();
